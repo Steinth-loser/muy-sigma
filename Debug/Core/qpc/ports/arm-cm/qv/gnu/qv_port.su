@@ -1,0 +1,5 @@
+../Core/qpc/ports/arm-cm/qv/gnu/qv_port.c:68:6:QF_int_disable_	0	static,ignoring_inline_asm
+../Core/qpc/ports/arm-cm/qv/gnu/qv_port.c:99:6:QF_int_enable_	0	static,ignoring_inline_asm
+../Core/qpc/ports/arm-cm/qv/gnu/qv_port.c:134:6:QF_crit_entry_	0	static,ignoring_inline_asm
+../Core/qpc/ports/arm-cm/qv/gnu/qv_port.c:165:6:QF_crit_exit_	0	static,ignoring_inline_asm
+../Core/qpc/ports/arm-cm/qv/gnu/qv_port.c:204:6:QV_init	4	static

@@ -1,0 +1,8 @@
+../Core/qpc/src/qf/qf_qeq.c:44:6:QEQueue_init	2
+../Core/qpc/src/qf/qf_qeq.c:71:6:QEQueue_post	8
+../Core/qpc/src/qf/qf_qeq.c:152:6:QEQueue_postLIFO	5
+../Core/qpc/src/qf/qf_qeq.c:209:21:QEQueue_get	4
+../Core/qpc/src/qf/qf_qeq.c:274:10:QEQueue_getUse	2
+../Core/qpc/src/qf/qf_qeq.c:285:10:QEQueue_getFree	1
+../Core/qpc/src/qf/qf_qeq.c:292:10:QEQueue_getMin	1
+../Core/qpc/src/qf/qf_qeq.c:299:6:QEQueue_isEmpty	1

@@ -1,0 +1,9 @@
+../Core/qpc/src/qf/qf_dyn.c:46:6:QF_poolInit	32	static
+../Core/qpc/src/qf/qf_dyn.c:87:10:QF_poolGetMaxBlockSize	16	static
+../Core/qpc/src/qf/qf_dyn.c:107:10:QF_getPoolUse	32	static
+../Core/qpc/src/qf/qf_dyn.c:142:10:QF_getPoolFree	24	static
+../Core/qpc/src/qf/qf_dyn.c:166:10:QF_getPoolMin	24	static
+../Core/qpc/src/qf/qf_dyn.c:190:8:QF_newX_	32	static
+../Core/qpc/src/qf/qf_dyn.c:268:6:QF_gc	24	static
+../Core/qpc/src/qf/qf_dyn.c:325:14:QF_newRef_	24	static
+../Core/qpc/src/qf/qf_dyn.c:367:6:QF_deleteRef_	24	static

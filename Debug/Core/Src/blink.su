@@ -1,0 +1,5 @@
+../Core/Src/blink.c:20:6:Blinky_ctor	16	static
+../Core/Src/blink.c:27:15:Blinky_initial	16	static
+../Core/Src/blink.c:33:15:Blinky_off	24	static
+../Core/Src/blink.c:60:15:Blinky_on	24	static
+../Core/Src/blink.c:87:15:Blinky_paused	24	static
