@@ -70,6 +70,9 @@ typedef enum {
 
 // STATIC OBJECTS
 
+
+
+
 /* BSP API */
 
 void BSP_Init(void);

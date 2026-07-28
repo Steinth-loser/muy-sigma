@@ -1,6 +1,5 @@
+../Drivers/CMSIS/Include/core_cm4.h:1814:22:__NVIC_SetPriority	2
 ../Drivers/CMSIS/Include/core_cm4.h:1938:34:__NVIC_SystemReset	1
-../Core/Src/bsp.c:14:6:BSP_ledOff	1
-../Core/Src/bsp.c:20:6:BSP_ledOn	1
-../Core/Src/bsp.c:41:6:Q_onError	0
-../Core/Src/bsp.c:49:6:QF_onStartup	1
-../Core/Src/bsp.c:54:6:QV_onIdle	1
+../Core/Src/bsp.c:32:6:Q_onError	0
+../Core/Src/bsp.c:40:6:QF_onStartup	1
+../Core/Src/bsp.c:46:6:QV_onIdle	1

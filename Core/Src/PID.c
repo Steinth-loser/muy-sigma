@@ -86,14 +86,7 @@ float PIDController_Update(PIDController* self, float setpoint, float measuremen
 }
 
 
-void set_motor_pwm(float pid_signal)
-{
-	int duty = (int)fabsf(pid_signal);
 
-	duty = CLAMP(duty, 0, 999);
-
-	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, duty);
-}
 
 
 
