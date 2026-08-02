@@ -1,0 +1,12 @@
+../Core/Src/sigma.c:38:6:Satellite_Ctor	1
+../Core/Src/sigma.c:50:15:idle	10
+../Core/Src/sigma.c:96:15:readyToFlight	4
+../Core/Src/sigma.c:127:15:rising	4
+../Core/Src/sigma.c:159:15:landing	4
+../Core/Src/sigma.c:198:15:leaving	2
+../Core/Src/sigma.c:225:15:payloadLanding1	4
+../Core/Src/sigma.c:265:15:hanging	6
+../Core/Src/sigma.c:302:15:payloadLanding2	4
+../Core/Src/sigma.c:333:15:recovery	5
+../Core/Src/sigma.c:369:15:telemetryDeactiveRecovery	3
+../Core/Src/sigma.c:397:15:telemetryActive	7

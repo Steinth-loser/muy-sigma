@@ -9,6 +9,7 @@
 #include "app.h"
 #include "bsp.h"
 #include "qpc.h"
+#include "rtc.h"
 
 Satellite sat;
 
@@ -21,7 +22,6 @@ static QState readyToFlight(Satellite * const me, QEvt const * const e);
 static QState rising(Satellite * const me, QEvt const * const e);
 static QState landing(Satellite * const me, QEvt const * const e);
 static QState leaving(Satellite * const me, QEvt const * const e);
-static QState payloadLanding(Satellite * const me, QEvt const * const e);
 static QState recovery(Satellite * const me, QEvt const * const e);
 /////////////////////////////////////////
 /*Substates for payload landing*/
@@ -167,7 +167,7 @@ static QState landing(Satellite * const me, QEvt const * const e)
 	case Q_ENTRY_SIG:
 		HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR0, (uint32_t) 2);
 
-		BSP_PID_Update();
+		BSP_PID_Update_landing();
 
 		return Q_HANDLED();
 
@@ -175,7 +175,7 @@ static QState landing(Satellite * const me, QEvt const * const e)
 	case HEIGHT_TIMEOUT_SIG:
 		BSP_Height_Stat stat = BSP_calculate_height();
 
-		BSP_PID_Update();
+		BSP_PID_Update_landing();
 
 		if(stat == LEAVING) {
 
@@ -233,23 +233,22 @@ static QState payloadLanding1(Satellite * const me, QEvt const * const e)
 	case Q_ENTRY_SIG:
 		HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR0, (uint32_t) 4);
 
-		BSP_PID_Update();
-
 		return Q_HANDLED();
 
 	case HEIGHT_TIMEOUT_SIG:
 
 		BSP_Height_Stat stat = BSP_calculate_height();
 
-		BSP_PID_Update();
+		BSP_PID_Update_landing();
 
 		if(stat == HANGING) {
 
-
 			return Q_TRAN(&hanging);
+
 		}
 
 	default:
+
 		return Q_SUPER(&telemetryActive);
 
 	}
@@ -276,7 +275,11 @@ static QState hanging(Satellite * const me, QEvt const * const e)
 	case HEIGHT_TIMEOUT_SIG:
 		BSP_Height_Stat stat = BSP_calculate_height();
 
-		BSP_PID_Update();
+		if(stat == LANDING) {
+			return Q_TRAN(&payloadLanding2);
+		}
+
+		BSP_PID_Update_hanging();
 
 		return Q_HANDLED();
 
@@ -309,7 +312,7 @@ static QState payloadLanding2(Satellite * const me, QEvt const * const e)
 
 		BSP_Height_Stat stat = BSP_calculate_height();
 
-		BSP_PID_Update();
+		BSP_PID_Update_landing();
 
 		if(stat == RECOVERY) {
 			return Q_TRAN(&recovery);

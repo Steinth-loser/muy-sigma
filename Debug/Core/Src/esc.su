@@ -1,0 +1,8 @@
+../Core/Src/esc.c:13:17:ESC_ClampPulse	16	static
+../Core/Src/esc.c:22:19:ESC_Init	24	static
+../Core/Src/esc.c:50:19:ESC_SetRange	16	static
+../Core/Src/esc.c:68:19:ESC_Arm	16	static
+../Core/Src/esc.c:87:19:ESC_SetThrottlePercent	24	static
+../Core/Src/esc.c:103:19:ESC_SetPulseWidth	24	static
+../Core/Src/esc.c:118:19:ESC_Stop	16	static
+../Core/Src/esc.c:128:19:ESC_PWM_Disable	16	static

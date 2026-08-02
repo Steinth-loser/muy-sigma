@@ -12,7 +12,7 @@
 #include <stdint.h>
 #include "qpc.h"
 #include "pid.h"
-
+#include "usart.h"
 
 #define BSP_TICKS_PER_SEC   1000U
 
@@ -24,17 +24,23 @@
 // Telemetri Paketi,
 // NOT: Lora için adres high, low ve channel bilgisi eklenebilir
 // veya sadece channel.
-typedef struct{
+typedef struct {
+	//uint8_t channel;
 	uint32_t packet_start;
 
-	uint16_t packet_number;
+	uint32_t packet_number;
 
-	uint8_t  sat_stat;
+	uint16_t sat_stat;
 
-	uint8_t error_code;
+	uint16_t error_code;
 
-	uint32_t sending_time;
-
+	// --- RTC VERİLERİ
+	uint8_t rtc_year;     // Yıl (0-99)
+	uint8_t rtc_month;    // Ay (1-12)
+	uint8_t rtc_day;      // Gün (1-31)
+	uint8_t rtc_hour;     // Saat (0-23)
+	uint8_t rtc_minute;   // Dakika (0-59)
+	uint8_t rtc_second;   // Saniye (0-59)
 
 	float press;
 	float height;
@@ -48,9 +54,11 @@ typedef struct{
 
 	uint32_t team_number;
 
+	uint32_t crc32;
+
 	uint32_t packet_end;
 
-}BSP_telemetry __attribute__((packed));
+}__attribute__((packed)) BSP_telemetry;
 
 // Yükeseklik sorgusu için
 typedef enum {
@@ -58,14 +66,16 @@ typedef enum {
 	LANDING,
 	LEAVING,
 	HANGING,
-	RECOVERY
+	RECOVERY,
+	HGHT_ERROR
 }BSP_Height_Stat;
 
 // Komut İşlemek için
 typedef enum {
 	LEAVE,
 	OPEN_PARACHUTE,
-	BONUS_2
+	BONUS_2,
+	CMD_ERROR
 }BSP_Command_Stat;
 
 // STATIC OBJECTS
@@ -79,7 +89,9 @@ void BSP_Init(void);
 
 void BSP_Leave_Carrier(void);
 
-void BSP_PID_Update(void);
+void BSP_PID_Update_landing(void);
+
+void BSP_PID_Update_hanging(void);
 
 void BSP_Open_Parachute(void);
 
@@ -88,6 +100,8 @@ void BSP_Create_Packet(void);
 void BSP_Save_to_SD(void);
 
 void BSP_Send_Packet(void);
+
+void BSP_Buzzer(void);
 
 BSP_Command_Stat BSP_ProcessCommand(void);
 

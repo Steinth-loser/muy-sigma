@@ -1,0 +1,12 @@
+../Core/Src/sigma.c:38:6:Satellite_Ctor	16	static
+../Core/Src/sigma.c:50:15:idle	24	static
+../Core/Src/sigma.c:96:15:readyToFlight	24	static
+../Core/Src/sigma.c:127:15:rising	24	static
+../Core/Src/sigma.c:159:15:landing	24	static
+../Core/Src/sigma.c:198:15:leaving	16	static
+../Core/Src/sigma.c:225:15:payloadLanding1	24	static
+../Core/Src/sigma.c:265:15:hanging	24	static
+../Core/Src/sigma.c:302:15:payloadLanding2	24	static
+../Core/Src/sigma.c:333:15:recovery	16	static
+../Core/Src/sigma.c:369:15:telemetryDeactiveRecovery	16	static
+../Core/Src/sigma.c:397:15:telemetryActive	24	static

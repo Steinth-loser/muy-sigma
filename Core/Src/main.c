@@ -18,11 +18,17 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "crc.h"
+#include "dma.h"
+#include "rtc.h"
+#include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "qpc.h"
+#include "app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,7 +60,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-static QEvtPtr l_blinkyQueueSto[10];
+extern uint8_t buffer[16];
+static QEvtPtr l_blinkyQueueSto[16];
 /* USER CODE END 0 */
 
 /**
@@ -86,6 +93,13 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_RTC_Init();
+  MX_USART1_UART_Init();
+  MX_CRC_Init();
+  MX_TIM2_Init();
+  MX_TIM4_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -130,8 +144,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
@@ -163,12 +178,18 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+
+
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
-	if (GPIO_Pin == GPIO_PIN_4) {
-		static QEvt const btnEvt = QEVT_INITIALIZER(BTN_PRESSED_SIG);
-		QACTIVE_POST(AO_Blinky, &btnEvt, (void*)0);
-	}
+    if(huart->Instance == USART1)
+    {
+    	static QEvt const cmdEvt = QEVT_INITIALIZER(RX_COMMAND_SIG);
+
+    	QACTIVE_POST(AO_Satellite, &cmdEvt, (void*)0);
+        // KRİTİK: Bir sonraki paket için dinlemeyi tekrar başlatın
+        HAL_UARTEx_ReceiveToIdle_IT(&huart1, buffer, 64);
+    }
 }
 /* USER CODE END 4 */
 

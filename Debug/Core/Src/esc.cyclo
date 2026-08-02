@@ -1,0 +1,8 @@
+../Core/Src/esc.c:13:17:ESC_ClampPulse	3
+../Core/Src/esc.c:22:19:ESC_Init	7
+../Core/Src/esc.c:50:19:ESC_SetRange	4
+../Core/Src/esc.c:68:19:ESC_Arm	6
+../Core/Src/esc.c:87:19:ESC_SetThrottlePercent	5
+../Core/Src/esc.c:103:19:ESC_SetPulseWidth	6
+../Core/Src/esc.c:118:19:ESC_Stop	3
+../Core/Src/esc.c:128:19:ESC_PWM_Disable	4
