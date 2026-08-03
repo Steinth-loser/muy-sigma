@@ -16,6 +16,8 @@
 #include "time_date.h"
 #include <string.h>
 #include "crc.h"
+#include "sdio.h"
+#include "fatfs.h"
 
 /* RTC Variables*/
 RTC_TimeTypeDef sTime;
@@ -34,6 +36,13 @@ uint8_t buffer[16];
 
 // Descending Velocity
 float des_vel;
+
+// SD Card writing
+
+FATFS fs;          // Dosya sistemi nesnesi
+FIL file;          // Dosya nesnesi
+FRESULT res;       // Sonuç kodu
+UINT bytesWritten;
 
 
 
@@ -77,6 +86,13 @@ void BSP_Init(void)
 
 	// RX interrupt setting for command processing
 	HAL_UARTEx_ReceiveToIdle_IT(&huart1, buffer, 64);
+
+	// Mount the file system
+	res = f_mount(&fs, "", 1);
+	if (res == FR_OK) {
+	     // 2. Dosyayı Oluştur ve Yazma Modunda Aç (Varsa üzerine yaz veya yeni aç)
+		res = f_open(&file, "flight_log.bin", FA_OPEN_APPEND | FA_WRITE);
+	}
 }
 
 // Leaving the carrier
@@ -137,6 +153,11 @@ void BSP_Save_to_SD(void)
 {
 	// SDIO will be used here
 	// ...
+
+	if(res == FR_OK) {
+		f_write(&file, &tel, sizeof(BSP_telemetry), &bytesWritten);
+		f_sync(&file);
+	}
 }
 
 // Send the data through LoRa

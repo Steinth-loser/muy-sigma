@@ -20,7 +20,9 @@
 #include "main.h"
 #include "crc.h"
 #include "dma.h"
+#include "fatfs.h"
 #include "rtc.h"
+#include "sdio.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -100,6 +102,8 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM4_Init();
   MX_USART2_UART_Init();
+  MX_SDIO_SD_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
