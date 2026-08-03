@@ -373,6 +373,8 @@ static QState telemetryDeactiveRecovery(Satellite * const me, QEvt const * const
 
 		HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR0, (uint32_t) 8);
 
+		BSP_close_file();
+
 		return Q_HANDLED();
 
 	case BUZZER_TIMEOUT_SIG:

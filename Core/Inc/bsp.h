@@ -103,6 +103,8 @@ void BSP_Send_Packet(void);
 
 void BSP_Buzzer(void);
 
+void BSP_close_file(void);
+
 BSP_Command_Stat BSP_ProcessCommand(void);
 
 BSP_Height_Stat BSP_calculate_height(void);

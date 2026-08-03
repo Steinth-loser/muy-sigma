@@ -156,7 +156,7 @@ void BSP_Save_to_SD(void)
 
 	if(res == FR_OK) {
 		f_write(&file, &tel, sizeof(BSP_telemetry), &bytesWritten);
-		f_sync(&file);
+
 	}
 }
 
@@ -171,6 +171,13 @@ void BSP_Send_Packet(void)
 void BSP_Buzzer(void)
 {
 	// Handle buzzer here
+}
+
+// finally close the file
+
+void BSP_close_file(void)
+{
+	f_close(&file);
 }
 
 

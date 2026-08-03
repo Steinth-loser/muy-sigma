@@ -9,8 +9,9 @@
 ../Core/Src/bsp.c:152:6:BSP_Save_to_SD	2
 ../Core/Src/bsp.c:164:6:BSP_Send_Packet	1
 ../Core/Src/bsp.c:171:6:BSP_Buzzer	1
-../Core/Src/bsp.c:178:18:BSP_ProcessCommand	4
-../Core/Src/bsp.c:198:17:BSP_calculate_height	1
-../Core/Src/bsp.c:230:6:Q_onError	0
-../Core/Src/bsp.c:238:6:QF_onStartup	1
-../Core/Src/bsp.c:244:6:QV_onIdle	1
+../Core/Src/bsp.c:178:6:BSP_close_file	1
+../Core/Src/bsp.c:185:18:BSP_ProcessCommand	4
+../Core/Src/bsp.c:205:17:BSP_calculate_height	1
+../Core/Src/bsp.c:237:6:Q_onError	0
+../Core/Src/bsp.c:245:6:QF_onStartup	1
+../Core/Src/bsp.c:251:6:QV_onIdle	1
