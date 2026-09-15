@@ -1,190 +1,196 @@
+# Model Satellite Flight Control System
 
-# MUY Sigma — Model Satellite Flight Software
+Embedded flight control and telemetry software developed for a model satellite competition using an **STM32F4** microcontroller.
 
-Embedded flight software developed for the TÜRKSAT Model Satellite Competition.
+The project was developed around a hierarchical state machine to manage the different phases of the mission. The system handles flight-state transitions, altitude-based decisions, landing control, telemetry, recovery operations, and persistent mission state.
 
-The project focuses on the development of a hierarchical state machine-based control architecture running on an STM32F4 microcontroller.
+## Overview
 
-As part of the competition, our team achieved a **89.2 score in the Critical Design Review (CDR)** and advanced to the stage immediately before the final.
-
-## Project Overview
-
-MUY Sigma is a model satellite software project developed for the TÜRKSAT Model Satellite Competition.
-
-The software was designed around a hierarchical state machine architecture to organize the satellite's operational logic and manage transitions between different system states.
-
-The project provided hands-on experience in embedded software architecture, state-driven system design, and the development of software for a competition-oriented aerospace system.
-
-## Competition Achievement
-
-| Category | Result |
-|---|---|
-| Competition | TÜRKSAT Model Satellite Competition |
-| Microcontroller | STM32F4 |
-| Software architecture | Hierarchical State Machine |
-| Critical Design Review (CDR) | 89.2 |
-| Competition progress | Advanced to the stage immediately before the final |
-
-## Software Architecture
-
-The core of the software is a **hierarchical state machine (HSM)**.
-
-This architecture allows system behavior to be organized into states and substates, with defined transitions based on system events and conditions.
-
-A conceptual representation of the architecture is shown below:
+The satellite software is organized around the different stages of the mission:
 
 ```text
-+--------------------------------+
-|       Satellite Software       |
-+----------------+---------------+
-                 |
-                 v
-+--------------------------------+
-|       Top-Level State          |
-+----------------+---------------+
-                 |
-        +--------+--------+
-        |                 |
-        v                 v
-+---------------+ +---------------+
-|   State A     | |   State B     |
-+-------+-------+ +-------+-------+
-        |                 |
-        v                 v
-+---------------+ +---------------+
-|  Substates    | |  Substates    |
-+---------------+ +---------------+
+Ready to Flight
+       │
+       ▼
+    Rising
+       │
+       ▼
+    Landing
+       │
+       ▼
+    Leaving
+       │
+       ▼
+ Payload Landing 1
+       │
+       ▼
+    Hanging
+       │
+       ▼
+ Payload Landing 2
+       │
+       ▼
+    Recovery
+       │
+       ▼
+Telemetry Deactivated
 ```
 
-> The actual state hierarchy, state names, transition conditions, and event-handling mechanisms should be documented directly from the implementation.
+The state machine is implemented using **QP/C**, allowing the system to handle events and transitions without relying on a large blocking control loop.
 
-## Key Features
+## Main Features
 
-- STM32F4-based embedded software
-- Hierarchical state machine architecture
-- State-driven system behavior
-- Embedded C/C++ development
-- Software development for a model satellite competition
-- Practical experience with structured embedded system design
+* STM32F4-based embedded control system
+* Hierarchical state machine using QP/C
+* Event-driven state transitions
+* Mission state persistence using RTC backup registers
+* Periodic altitude calculation
+* Landing control with PID update functions
+* Telemetry packet generation
+* SD card data logging
+* Telemetry transmission
+* Ground command processing
+* Carrier separation control
+* Parachute opening command
+* Recovery buzzer control
+* Timed operations using QP/C time events
 
-Additional features such as telemetry, sensor management, communication interfaces, and fault handling should be added only after they are verified in the source code.
+## State Machine
 
-## Hardware and Software
+The main flight states are implemented as separate state handlers.
 
-### Hardware
+Each state is responsible for the actions and events relevant to that part of the mission.
 
-| Component | Description |
-|---|---|
-| Microcontroller | STM32F4 |
-| Platform | Model satellite |
-| Sensors | To be documented |
-| Communication hardware | To be documented |
-| Other subsystems | To be documented |
+For example, during the rising phase, the system periodically checks the altitude status:
 
-### Software
+```c
+BSP_Height_Stat stat = BSP_calculate_height();
 
-- C / C++
-- STM32F4 development platform
-- Hierarchical State Machine architecture
-- Development environment: **[Add actual toolchain]**
-- Additional libraries or middleware: **[Add if applicable]**
+if (stat == LANDING) {
+    return Q_TRAN(&landing);
+}
+```
 
-## System Behavior
+The landing state then continues the landing control and checks for the next mission phase.
 
-The hierarchical state machine provides a structured way to represent the operational behavior of the satellite software.
+This structure makes the flight logic easier to follow compared to putting the complete mission sequence inside a single loop.
 
-Each state is responsible for a specific part of the system's behavior, while transitions determine how the system moves between operational conditions.
+## Hierarchical State Machine
 
-The following aspects should be documented according to the actual implementation:
-
-- Top-level system states
-- Nested substates
-- State entry and exit behavior
-- Transition conditions
-- Event handling
-- Error and fault states
-- Interaction with hardware and communication modules
-
-## Project Structure
-
-The following structure is a placeholder and should be replaced with the actual repository layout:
+Telemetry-related functionality is handled through a super-state:
 
 ```text
-muy-sigma/
-├── Core/
-├── Drivers/
-├── Inc/
-├── Src/
-├── README.md
-└── ...
+                 telemetryActive
+                       │
+       ┌───────────────┼────────────────┐
+       │               │                │
+ Ready to Flight     Rising          Landing
+       │               │                │
+       └───────────────┴────────────────┘
+                       │
+                    Leaving
+                       │
+                  Payload States
+                       │
+                    Recovery
 ```
 
-## Getting Started
+States that use the active telemetry functionality return to `telemetryActive` for common event handling.
 
-### Prerequisites
+This allows common operations such as telemetry transmission and command processing to be handled separately from flight-state-specific logic.
 
-- STM32F4 development board or target hardware
-- Required STM32 toolchain
-- Programmer/debugger
-- Hardware components required by the model satellite
-- **[Add any additional dependencies]**
+## Persistent Mission State
 
-### Build and Flash
+One of the important parts of the system is the use of the STM32 RTC backup register to store the current mission state.
 
-1. Clone the repository:
+For example:
 
-   ```bash
-   git clone https://github.com/Steinth-loser/muy-sigma.git
-   ```
+```c
+HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR0, (uint32_t) 2);
+```
 
-2. Open the project in the appropriate STM32 development environment.
-3. Configure the target hardware and project settings.
-4. Build the firmware.
-5. Flash the firmware to the target board.
-6. Test the implemented state machine and connected subsystems.
+The saved value is checked during startup:
 
-The exact build system and flashing procedure should be documented according to the project files.
+```c
+uint8_t value = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR0);
+```
 
-## My Contributions
+The software can then select the appropriate state instead of always starting from the beginning of the mission.
 
-I contributed to the embedded software development of our TÜRKSAT Model Satellite Competition project.
+This was useful for keeping track of the mission phase across resets or power interruptions.
 
-My work included the development of a hierarchical state machine architecture on the STM32F4 platform.
+## Timed Events
 
-The following details should be refined based on my actual responsibilities:
+Several operations are controlled using QP/C time events.
 
-- Designed and implemented the hierarchical state machine.
-- Developed state transitions and system behavior for **[specific operational states]**.
-- Implemented **[specific embedded software modules]**.
-- Worked on **[sensor handling, communication, telemetry, or other verified components]**.
-- Tested and debugged the software on **[actual test environment]**.
+Examples include:
 
-## Competition Experience
+* Periodic altitude calculation
+* Periodic telemetry transmission
+* 10-second mission delays
+* Recovery buzzer timing
 
-Participating in the TÜRKSAT Model Satellite Competition provided practical experience in developing embedded software within a structured engineering and review process.
+For example, the recovery state starts a timed buzzer event and a 10-second timer:
 
-Our team achieved a **89.2 score in the Critical Design Review (CDR)** and progressed to the stage immediately before the final.
+```c
+QTimeEvt_armX(&me->tenSecTimeEvt, 10000U, 0U);
+QTimeEvt_armX(&me->buzzTimeEvt, 500U, 500U);
+```
 
-This project strengthened my experience in embedded software architecture, collaborative engineering, and the development of software for a complex system with defined operational requirements.
+This keeps timing-related operations event-driven instead of using blocking delays.
 
-## Future Improvements
+## Telemetry
 
-Potential future improvements include:
+While telemetry is active, the system periodically:
 
-- More detailed documentation of the state hierarchy
-- State transition diagrams
-- Automated testing of state transitions
-- Improved fault handling and diagnostics
-- More comprehensive hardware-in-the-loop testing
-- Documentation of system interfaces and timing requirements
+1. Creates a telemetry packet
+2. Saves the packet to the SD card
+3. Sends the packet
 
-## Author
+```c
+BSP_Create_Packet();
+BSP_Save_to_SD();
+BSP_Send_Packet();
+```
 
-**Steinth-loser**
+Ground commands are also processed through the telemetry state. Depending on the received command, the system can perform actions such as carrier separation or parachute deployment.
 
-Electrical and Electronics Engineering Student  
-Interests: Embedded Systems, IoT, Robotics, and Edge AI
+## Landing Control
 
-## License
+During the landing phases, altitude information is used to determine the next state while the landing controller is updated periodically.
 
-[Add the appropriate license if applicable.]
+```c
+BSP_Height_Stat stat = BSP_calculate_height();
+
+BSP_PID_Update_landing();
+```
+
+A separate control function is also used for the hanging phase:
+
+```c
+BSP_PID_Update_hanging();
+```
+
+## Competition Result
+
+The project was developed as part of a model satellite competition.
+
+* **CDR Score:** 89.2
+* Reached the stage immediately before the final round
+
+## Technologies
+
+* **MCU:** STM32F4
+* **Language:** C
+* **Framework:** QP/C
+* **Control:** PID
+* **Storage:** SD Card
+* **Persistent State:** STM32 RTC Backup Registers
+* **Development Environment:** STM32CubeIDE / STM32 HAL
+
+## My Contribution
+
+I worked on the embedded flight-control software, including the state-machine structure, mission-state handling, timed events, flight-state transitions, and control/telemetry related software.
+
+The main goal was to keep the flight logic separated into manageable states and to avoid blocking operations where an event-driven approach was more suitable.
+
